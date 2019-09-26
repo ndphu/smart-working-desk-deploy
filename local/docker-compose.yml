@@ -1,0 +1,45 @@
+version: '3'
+services:
+  face-service:
+    build: ./face-service
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/facedb
+      - MONGODB_DB_NAME=facedb
+      - MQTT_BROKER=tcp://mqtt:1883
+    depends_on:
+      - mongo
+      - mqtt
+  face-recognizer-worker:
+    build: ./face-recognizer-worker
+    environment:
+      - MQTT_BROKER=tcp://mqtt:1883
+      - PROJECT_ID=67c2faf5-a973-4a67-afa2-be6f30794647
+      - SYNC_INTERVAL=15s
+      - BACKEND_BASE_URL=http://face-service:8080/api
+    depends_on:
+      - mqtt
+      - face-service
+  monitor-service:
+    build: ./monitor-service
+    environment:
+      - MQTT_BROKER=tcp://mqtt:1883
+      - MONGODB_URI=mongodb://mongo:27017/facedb
+      - MONGODB_DB_NAME=facedb
+    depends_on:
+      - mqtt
+      - mongo
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - './monodb-data:/data/db'
+  mqtt:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart: always
