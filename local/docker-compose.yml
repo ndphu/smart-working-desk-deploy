@@ -30,6 +30,17 @@ services:
     depends_on:
       - mqtt
       - mongo
+  notification-service:
+    build: ./notification-service
+    environment:
+      - MQTT_BROKER=tcp://mqtt:1883
+      - MONGODB_URI=mongodb://mongo:27017/facedb
+      - MONGODB_DB_NAME=facedb
+      - SLACK_BOT_ACCESS_TOKEN=${SLACK_BOT_ACCESS_TOKEN}
+    depends_on:
+      - mqtt
+      - mongo
+
   mongo:
     image: mongo
     restart: always
