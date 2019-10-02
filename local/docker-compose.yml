@@ -8,6 +8,10 @@ services:
       - MONGODB_URI=mongodb://mongo:27017/facedb
       - MONGODB_DB_NAME=facedb
       - MQTT_BROKER=tcp://mqtt:1883
+      - FIREBASE_ADMIN_ACCOUNT=${FIREBASE_ADMIN_ACCOUNT}
+      - TOKEN_SECRET=${TOKEN_SECRET}
+      - SLACK_OAUTH_ACCESS_TOKEN=${SLACK_OAUTH_ACCESS_TOKEN}
+      - SLACK_BOT_ACCESS_TOKEN=${SLACK_BOT_ACCESS_TOKEN}
     depends_on:
       - mongo
       - mqtt
@@ -47,7 +51,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - './monodb-data:/data/db'
+      - './mongodb-data:/data/db'
   mqtt:
     image: eclipse-mosquitto
     ports:
