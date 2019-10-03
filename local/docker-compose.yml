@@ -1,5 +1,15 @@
 version: '3'
 services:
+  nginx:
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certs:/etc/certs
+    depends_on:
+      - face-service
   face-service:
     build: ./face-service
     ports:
